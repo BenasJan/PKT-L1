@@ -1,7 +1,7 @@
 from friend import Friend
 from utils import doesFriendExist
 
-allFriends = [Friend]
+allFriends = []
 inputFile = open('./friends.txt', 'r')
 
 allLines = inputFile.readlines()
