@@ -1,10 +1,11 @@
 from friend import Friend
 from utils import doesFriendExist
+from utils import printAllFriends
 
-allFriends = [Friend]
+allFriends = []
 inputFile = open('./friends.txt', 'r')
 
-allLines = inputFile.readlines()
+allLines = inputFile.read().splitlines()
 
 for line in allLines:
     names = line.split(' ')
@@ -13,11 +14,25 @@ for line in allLines:
 
     firstFriend.addFriend(secondFriend)
     secondFriend.addFriend(firstFriend)
+
     if doesFriendExist(allFriends, firstFriend) == False:
         allFriends.append(firstFriend)
+    else:
+        index = next((i for i, friend in enumerate(allFriends) if friend.name == firstFriend.name), -1)
+        if index > -1:
+            allFriends[index].addFriend(secondFriend) 
 
     if doesFriendExist(allFriends, secondFriend) == False:
         allFriends.append(secondFriend)
+    else:
+        index = next((i for i, friend in enumerate(allFriends) if friend.name == secondFriend.name), -1)
+        if index > -1:
+            allFriends[index].addFriend(firstFriend)
+
+printAllFriends(allFriends)
+
+
+
 
 # from human import Human
 
