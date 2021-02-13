@@ -1,31 +1,32 @@
 from friend import Friend
 
-def doesFriendExist(friends: [Friend], friendToCheck: Friend) -> bool:
-    for friend in friends:
-        if friend.name == friendToCheck.name:
-            return True
+def getFriendsCountInFriendNetwork(network: [], alreadyAddedFriendNames: list = [], shouldReset = True) -> int:
+    if shouldReset:
+        alreadyAddedFriendNames = []
 
-    return False
+    allSubfriendsFromNetWork: list = []
+    for friend in network:
+        allSubfriendsFromNetWork += friend.friends
 
-def getUniqueFriends(friends: [Friend]) -> [Friend]:
-    uniqueFriends = [Friend]
-    
-    for friend in friends:
-        if doesFriendExist(uniqueFriends, friend) == False:
-            uniqueFriends.append(friend)
+    alreadyAddedFriendNames += map(lambda fr: fr.name, network)
+    alreadyAddedFriendNames += map(lambda fr: fr.name, allSubfriendsFromNetWork)
+    alreadyAddedFriendNames = list(set([name for name in alreadyAddedFriendNames]))
 
-    return uniqueFriends
+    allSubfriendsDeeper: list = []
+    for friend in allSubfriendsFromNetWork:
+        allSubfriendsDeeper += friend.friends
 
-def getFriendsCountInFriendNetwork(friend1: Friend, frined2: Friend) -> int:
-    allFriends = []
-    allFriends += friend1.friends
-    allFriends += frined2.friends
+    for aafn in alreadyAddedFriendNames:
+        allSubfriendsDeeper = list(filter(lambda fr : fr.name != aafn, allSubfriendsDeeper))
 
-    uniqueFriends = getUniqueFriends(allFriends)
+    count = len(list(alreadyAddedFriendNames))
 
-    return uniqueFriends.count()
+    if len(allSubfriendsDeeper) > 0:
+        return getFriendsCountInFriendNetwork(allSubfriendsFromNetWork, alreadyAddedFriendNames, False)
+    else:
+        return count
 
-def printAllFriends(friends: [Friend]):
+def printAllFriends(friends: []):
     for friend in friends:
         print('%s has these friends:' %(friend.name))
         friendsOfFriend = friend.friends

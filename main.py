@@ -1,6 +1,6 @@
 from friend import Friend
-from utils import doesFriendExist
 from utils import printAllFriends
+from utils import getFriendsCountInFriendNetwork
 
 allFriends = []
 inputFile = open('./friends.txt', 'r')
@@ -12,46 +12,37 @@ for line in allLines:
     firstFriend = Friend(names[0])
     secondFriend = Friend(names[1])
 
-    firstFriend.addFriend(secondFriend)
-    secondFriend.addFriend(firstFriend)
+    firstFriendIndex = next((i for i, friend in enumerate(allFriends) if friend.name == firstFriend.name), -1)
+    secondFriendIndex = next((i for i, friend in enumerate(allFriends) if friend.name == secondFriend.name), -1)
 
-    if doesFriendExist(allFriends, firstFriend) == False:
-        allFriends.append(firstFriend)
+    if firstFriendIndex > -1:
+        if secondFriendIndex > -1:
+            allFriends[firstFriendIndex].addFriend(allFriends[secondFriendIndex])
+            allFriends[secondFriendIndex].addFriend(allFriends[firstFriendIndex])
+        else:
+            secondFriend.addFriend(allFriends[firstFriendIndex])
+            allFriends[firstFriendIndex].addFriend(secondFriend)
+            allFriends.append(secondFriend)
     else:
-        index = next((i for i, friend in enumerate(allFriends) if friend.name == firstFriend.name), -1)
-        if index > -1:
-            allFriends[index].addFriend(secondFriend) 
+        if secondFriendIndex > -1:
+            firstFriend.addFriend(allFriends[secondFriendIndex])
+            allFriends[secondFriendIndex].addFriend(firstFriend)
+            allFriends.append(firstFriend)
+        else:
+            firstFriend.addFriend(secondFriend)
+            secondFriend.addFriend(firstFriend)
+            allFriends.append(firstFriend)
+            allFriends.append(secondFriend)
 
-    if doesFriendExist(allFriends, secondFriend) == False:
-        allFriends.append(secondFriend)
+    if firstFriendIndex > -1:
+        count = getFriendsCountInFriendNetwork([allFriends[firstFriendIndex]])
+    elif secondFriendIndex > -1:
+        count = getFriendsCountInFriendNetwork([allFriends[secondFriendIndex]])
     else:
-        index = next((i for i, friend in enumerate(allFriends) if friend.name == secondFriend.name), -1)
-        if index > -1:
-            allFriends[index].addFriend(firstFriend)
+        firstFriendIndex = next((i for i, friend in enumerate(allFriends) if friend.name == firstFriend.name), -1)
+        count = getFriendsCountInFriendNetwork([allFriends[firstFriendIndex]])
+    
+    print(count)
 
-printAllFriends(allFriends)
-
-
-
-
-# from human import Human
-
-# ageSum = 0
-# humans = []
-# peopleFile = open('./people.txt', 'r')
-
-# allLines = peopleFile.readlines()
-# for line in allLines:
-#     humans.append(Human(line))
-
-# for human in humans:
-#     print(human.name)
-#     print(human.surname)
-#     print(human.age)
-#     print('')
-#     ageSum += human.age
-
-# print('Total age: %s' %(ageSum))
-
-# peopleFile.close()
-
+# printAllFriends(allFriends)
+inputFile.close()
