@@ -1,18 +1,12 @@
 def getFriendsCountInFriendNetwork(network: [], alreadyAddedFriendNames: list = [], shouldReset=True) -> int:
-    if shouldReset:
-        alreadyAddedFriendNames = []
+    if shouldReset: alreadyAddedFriendNames = []
 
-    allSubFriendsFromNetWork: list = []
-    for friend in network:
-        allSubFriendsFromNetWork += friend.friends
+    allFriendsFromNetWork: list = getFriendsOfFriends(network)
+    allSubFriendsDeeper: list = getFriendsOfFriends(allFriendsFromNetWork)
 
     alreadyAddedFriendNames += map(lambda fr: fr.name, network)
-    alreadyAddedFriendNames += map(lambda fr: fr.name, allSubFriendsFromNetWork)
+    alreadyAddedFriendNames += map(lambda fr: fr.name, allFriendsFromNetWork)
     alreadyAddedFriendNames = list(set([name for name in alreadyAddedFriendNames]))
-
-    allSubFriendsDeeper: list = []
-    for friend in allSubFriendsFromNetWork:
-        allSubFriendsDeeper += friend.friends
 
     for alreadyAddedFriendName in alreadyAddedFriendNames:
         allSubFriendsDeeper = list(filter(lambda fr: fr.name != alreadyAddedFriendName, allSubFriendsDeeper))
@@ -20,9 +14,18 @@ def getFriendsCountInFriendNetwork(network: [], alreadyAddedFriendNames: list = 
     count = len(list(alreadyAddedFriendNames))
 
     if len(allSubFriendsDeeper) > 0:
-        return getFriendsCountInFriendNetwork(allSubFriendsFromNetWork, alreadyAddedFriendNames, False)
+        return getFriendsCountInFriendNetwork(allFriendsFromNetWork, alreadyAddedFriendNames, False)
     else:
         return count
+
+
+def getFriendsOfFriends(friends: []) -> list:
+    friendsOfFriends: list = []
+
+    for friend in friends:
+        friendsOfFriends += friend.friends
+    
+    return friendsOfFriends
 
 
 def printAllFriends(friends: []):
