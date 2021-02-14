@@ -3,7 +3,7 @@ from utils import printAllFriends
 from utils import getFriendsCountInFriendNetwork
 
 allFriends = []
-inputFile = open('./friends.txt', 'r')
+inputFile = open('./data/friends3.txt', 'r')
 
 allLines = inputFile.read().splitlines()
 
